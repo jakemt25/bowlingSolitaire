@@ -10,7 +10,9 @@ TARGET = bowlingSolitiare
 TEMPLATE = app
 
 SOURCES += main.cpp \
-    card.cpp
+    card.cpp \
+    carddeck.cpp
 
 HEADERS += \
-    card.h
+    card.h \
+    carddeck.h

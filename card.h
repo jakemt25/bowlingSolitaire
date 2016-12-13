@@ -8,8 +8,8 @@
 #ifndef CARD_H
 #define CARD_H
 
-//SVG files used for the images
 #include <QGraphicsSvgItem>
+#include <QDebug>
 
 class Card : public QGraphicsSvgItem
 {
@@ -23,16 +23,22 @@ public:
     Heart
   };
 
+  //Functions
+  CardSuite getSuite(){return mCardSuite;}
+  int getValue() {return mCardValue;}
+  void setTouchedCards(QList<int> inTouchedCards){mTouchedCards = inTouchedCards;}
+  void printTouchedCards(){qDebug()<<"Printing Touched Cards\n"<<mTouchedCards;}
+
   //Constructor needs: image location, card value, card suite
-  Card(const QString &fileName, int value, CardSuite cardSuite);
+  Card(/*const QString &fileName,*/ int mValue, CardSuite mSuite);
   ~Card();
 
 private:
   //Data Values
-  CardSuite cardSuite;
-  int cardValue;
-  bool cardRevealed;
-
+  CardSuite mCardSuite;
+  int mCardValue;
+  bool mCardRevealed;
+  QList<int> mTouchedCards;
 };
 
 #endif // CARD_H
