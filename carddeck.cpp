@@ -2,6 +2,7 @@
 #include "card.h"
 
 #include <QDebug>
+#include <QDir>
 #include <time.h>
 
 
@@ -16,11 +17,12 @@ CardDeck::~CardDeck()
 
 void CardDeck::createCards(int numCards)
 {
-  for(int i = 1; i <= numCards; i++){
-    mDeckCards.append(new Card(/*"",*/ i, Card::Club));
+  //qDebug() << QDir::current().path();
+  for(int i = 1; i <= numCards; i++){//"C:\\Users\\Jake\\Documents\\bowlingSolitiare\\images\\clubs\\Club_%1_75x110.svg"
+    mDeckCards.append(new Card(QString("C:\\Users\\Jake\\Documents\\bowlingSolitaire\\images\\clubs\\Club_%1_75x110.svg").arg(i), i, Card::Club));
   }
   for(int i = 1; i <= numCards; i++){
-    mDeckCards.append(new Card(/*"",*/ i, Card::Spade));
+    mDeckCards.append(new Card(QString("C:\\Users\\Jake\\Documents\\bowlingSolitaire\\images\\spade\\Spade_%1_75x110.svg").arg(i), i, Card::Spade));
   }
 }
 

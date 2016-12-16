@@ -30,7 +30,7 @@ public:
   void printTouchedCards(){qDebug()<<"Printing Touched Cards\n"<<mTouchedCards;}
 
   //Constructor needs: image location, card value, card suite
-  Card(/*const QString &fileName,*/ int mValue, CardSuite mSuite);
+  Card(const QString &fileName, int mValue, CardSuite mSuite);
   ~Card();
 
 private:

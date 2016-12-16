@@ -8,8 +8,8 @@
 
 #include "carddeck.h"
 
-Card::Card(/*const QString &fileName,*/ int value, CardSuite suite)
-  : /*QGraphicsSvgItem(fileName),*/
+Card::Card(const QString &fileName, int value, CardSuite suite)
+  : QGraphicsSvgItem(fileName),
     mCardValue(value),
     mCardSuite(suite),
     mCardRevealed(false)
