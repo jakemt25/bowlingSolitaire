@@ -15,6 +15,8 @@ class Card : public QGraphicsSvgItem
 {
   Q_OBJECT
 public:
+  enum {Type = UserType + 1};
+
   //Types used with card
   enum CardSuite{
     Club = 1,
@@ -25,10 +27,13 @@ public:
 
   //Functions
   CardSuite getSuite(){return mCardSuite;}
+  int type() const {return Type;}
   int getValue() {return mCardValue;}
+  bool getSelected() {return mIsSelected;}
+  void setIsSelected(bool selected){mIsSelected = selected;}
   void setTouchedCards(QList<int> inTouchedCards){mTouchedCards = inTouchedCards;}
   void printTouchedCards(){qDebug()<<"Printing Touched Cards\n"<<mTouchedCards;}
-
+  void mousePressEvent(QGraphicsSceneMouseEvent *event);
   //Constructor needs: image location, card value, card suite
   Card(const QString &fileName, int mValue, CardSuite mSuite);
   ~Card();
@@ -38,6 +43,7 @@ private:
   CardSuite mCardSuite;
   int mCardValue;
   bool mCardRevealed;
+  bool mIsSelected;
   QList<int> mTouchedCards;
 };
 

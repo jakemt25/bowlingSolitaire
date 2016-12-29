@@ -12,13 +12,21 @@ Card::Card(const QString &fileName, int value, CardSuite suite)
   : QGraphicsSvgItem(fileName),
     mCardValue(value),
     mCardSuite(suite),
-    mCardRevealed(false)
+    mCardRevealed(false),
+    mIsSelected(false)
 
 {
-  setFlag(ItemIsSelectable);
+  //setFlag(ItemIsSelectable, true);
 }
 
 Card::~Card()
 {
 
+}
+
+void Card::mousePressEvent(QGraphicsSceneMouseEvent *event){
+  if(mIsSelected){
+    mIsSelected = false;
+  }
+  else mIsSelected = true;
 }

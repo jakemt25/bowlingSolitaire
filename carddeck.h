@@ -19,6 +19,7 @@ public:
   void addCard(Card* newCard);
   void removeCard();
   void shuffleCards(int numShuffles);
+  int getDeckSize() {return mDeckSize;}
   Card* getDeckCard(int i){return mDeckCards.at(i);}
 
   CardDeck();
@@ -26,6 +27,7 @@ public:
 
 private:
   QList<Card*> mDeckCards;
+  int mDeckSize;
 
 };
 
@@ -39,6 +41,8 @@ public:
   void addToStack(Card* newCard);
   void removeFromStack();
   void printStack();
+  int  getStackSize() {return mStackSize;}
+  QList<Card*> getStackCards(){ return mStackCards;}
   Card* getStackCard(int i){return mStackCards.at(i);}
 
   CardStack();
@@ -46,6 +50,7 @@ public:
 
 private:
   QList<Card*> mStackCards;
+  int mStackSize;
 };
 
 #endif // CARDDECK_H
