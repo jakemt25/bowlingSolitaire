@@ -10,6 +10,7 @@
 
 #include <QGraphicsSvgItem>
 #include <QDebug>
+#include "carddeck.h"
 
 class Card : public QGraphicsSvgItem
 {
@@ -29,11 +30,11 @@ public:
   CardSuite getSuite(){return mCardSuite;}
   int type() const {return Type;}
   int getValue() {return mCardValue;}
-  bool getSelected() {return mIsSelected;}
-  void setIsSelected(bool selected){mIsSelected = selected;}
+  bool getClicked() {return mIsClicked;}
+  void clearClicked(){mIsClicked = false;}
   void setTouchedCards(QList<int> inTouchedCards){mTouchedCards = inTouchedCards;}
   void printTouchedCards(){qDebug()<<"Printing Touched Cards\n"<<mTouchedCards;}
-  void mousePressEvent(QGraphicsSceneMouseEvent *event);
+  void Card::mousePressEvent(QGraphicsSceneMouseEvent *event){ mIsClicked = true;}
   //Constructor needs: image location, card value, card suite
   Card(const QString &fileName, int mValue, CardSuite mSuite);
   ~Card();
@@ -43,7 +44,7 @@ private:
   CardSuite mCardSuite;
   int mCardValue;
   bool mCardRevealed;
-  bool mIsSelected;
+  bool mIsClicked;
   QList<int> mTouchedCards;
 };
 

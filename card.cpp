@@ -13,7 +13,7 @@ Card::Card(const QString &fileName, int value, CardSuite suite)
     mCardValue(value),
     mCardSuite(suite),
     mCardRevealed(false),
-    mIsSelected(false)
+    mIsClicked(false)
 
 {
   //setFlag(ItemIsSelectable, true);
@@ -24,9 +24,4 @@ Card::~Card()
 
 }
 
-void Card::mousePressEvent(QGraphicsSceneMouseEvent *event){
-  if(mIsSelected){
-    mIsSelected = false;
-  }
-  else mIsSelected = true;
-}
+

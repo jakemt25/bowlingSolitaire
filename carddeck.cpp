@@ -7,7 +7,6 @@
 
 
 CardDeck::CardDeck()
-  :mDeckSize(0)
 {
 
 }
@@ -25,7 +24,6 @@ void CardDeck::createCards(int numCards)
   for(int i = 1; i <= numCards; i++){
     mDeckCards.append(new Card(QString(":/images/spade/Spade_%1_75x110.svg").arg(i), i, Card::Spade));
   }
-  mDeckSize = 2*numCards;
 }
 
 void CardDeck::printDeck()
@@ -39,13 +37,11 @@ void CardDeck::printDeck()
 void CardDeck::addCard(Card *newCard)
 {
   mDeckCards.append(newCard);
-  mDeckSize += 1;
 }
 
 void CardDeck::removeCard()
 {
   mDeckCards.pop_front();
-  mDeckSize -= 1;
 }
 
 void CardDeck::shuffleCards(int numShuffles)
@@ -62,7 +58,6 @@ void CardDeck::shuffleCards(int numShuffles)
 */
 
 CardStack::CardStack()
-  : mStackSize(0)
 {
 
 }
@@ -84,13 +79,11 @@ void CardStack::createStack(CardDeck &cardDeck, int cardsDrawn)
   {
     cardDeck.removeCard();
   }
-  mStackSize = cardsDrawn;
 }
 
 void CardStack::addToStack(Card* newCard)
 {
   mStackCards.push_back(newCard);
-  mStackSize += 1;
 }
 
 void CardStack::removeFromStack()
@@ -99,7 +92,6 @@ void CardStack::removeFromStack()
   else
   {
     mStackCards.pop_back();
-    mStackSize -= 1;
   }
 }
 

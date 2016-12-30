@@ -19,7 +19,7 @@ public:
   void addCard(Card* newCard);
   void removeCard();
   void shuffleCards(int numShuffles);
-  int getDeckSize() {return mDeckSize;}
+  void updateSelectedCards();
   Card* getDeckCard(int i){return mDeckCards.at(i);}
 
   CardDeck();
@@ -27,7 +27,6 @@ public:
 
 private:
   QList<Card*> mDeckCards;
-  int mDeckSize;
 
 };
 
@@ -41,16 +40,27 @@ public:
   void addToStack(Card* newCard);
   void removeFromStack();
   void printStack();
-  int  getStackSize() {return mStackSize;}
+
   QList<Card*> getStackCards(){ return mStackCards;}
   Card* getStackCard(int i){return mStackCards.at(i);}
+
+  QList<Card*> getSelectedCards(){ return mSelectedCards;}
+  Card* getSelectedCard(int i){return mSelectedCards.at(i);}
+  void appendSelectedCards(Card* card){ mSelectedCards.append(card);}
+  void removeSelectedCards(int i){ mSelectedCards.removeAt(i);}
+
+  QList<Card*> getNonSelectedCards(){ return mNonSelectedCards;}
+  Card* getNonSelectedCard(int i){return mNonSelectedCards.at(i);}
+  void appendNonSelectedCards(Card* card){ mNonSelectedCards.append(card);}
+  void removeNonSelectedCards(int i){ mNonSelectedCards.removeAt(i);}
 
   CardStack();
   ~CardStack();
 
 private:
   QList<Card*> mStackCards;
-  int mStackSize;
+  QList<Card*> mSelectedCards;
+  QList<Card*> mNonSelectedCards;
 };
 
 #endif // CARDDECK_H

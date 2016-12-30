@@ -28,11 +28,13 @@ int main(int argc, char **argv)
   view.setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
   view.setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
   view.setFixedSize(800, 1000);
+
   CardDeck cardDeck;
   CardStack pinStack;
   CardStack ballOneStack;
   CardStack ballTwoStack;
   CardStack ballThreeStack;
+  int maxSelection = 3;
   cardDeck.createCards(10);
   //cardDeck.printDeck();
   cardDeck.shuffleCards(100);
@@ -49,11 +51,49 @@ int main(int argc, char **argv)
   //ballThreeStack.printStack();
   drawPins(&scene, pinStack, cardWidth, cardHeight, cardGap);
   drawBalls(&scene, ballOneStack, ballTwoStack, ballThreeStack, cardWidth, cardHeight, cardGap);
-  drawScoreBoard(&scene, cardWidth, cardHeight, cardGap);
+  //drawScoreBoard(&scene, cardWidth, cardHeight, cardGap);
   view.show();
   QList<Card*> savedPins;
-  int x = 0;
+  //set all cards in nonclicked initially
+  for(int i = 0; i < pinStack.getStackCards().size(); i++){
+    pinStack.appendNonSelectedCards(pinStack.getStackCard(i));
+  }
+
   while(true){
+    int selectedSize = pinStack.getSelectedCards().size();
+    //go through all of selected, if clicked then goes to nonselected and highlight removed
+    for(int i = 0; i < pinStack.getSelectedCards().size(); i++){
+      Card* curCard = pinStack.getSelectedCard(i);
+      if(curCard->getClicked()){
+        pinStack.appendNonSelectedCards(curCard);
+        pinStack.removeSelectedCards(i);
+        QGraphicsItem* item = scene.itemAt(curCard->pos(), QTransform());
+        if(item->type() != curCard->type()){
+          scene.removeItem(item);
+        }
+        //clear clicked
+        curCard->clearClicked();
+      }
+    }
+    //go through all of the nonselected
+    for(int i = 0; i < pinStack.getNonSelectedCards().size(); i++){
+      //if clicked, check size of selected
+      Card* curCard = pinStack.getNonSelectedCard(i);
+      if(curCard->getClicked()){
+        //if able to go to selected. move and give highlight
+        if(selectedSize < maxSelection){
+          pinStack.appendSelectedCards(curCard);
+          pinStack.removeNonSelectedCards(i);
+          scene.addRect(curCard->pos().x(), curCard->pos().y(), cardWidth, cardHeight, QPen(QColor("red")));
+        }
+        //clear clicked
+        curCard->clearClicked();
+      }
+    }
+    QCoreApplication::processEvents();
+  }
+
+  /*while(true){
     QList<Card*> selectedPins, selectedBalls, nonSelectedPins;
     for(int i = 0; i < pinStack.getStackSize(); i++){
       if(pinStack.getStackCard(i)->getSelected()){
@@ -127,7 +167,7 @@ int main(int argc, char **argv)
       }
     }
     QCoreApplication::processEvents();
-  }
+  }*/
   return app.exec();
 }
 
@@ -222,9 +262,7 @@ void drawBalls(QGraphicsScene *scene, CardStack &ballOneStack, CardStack &ballTw
   scene->addItem(ballThreeStack.getStackCard(1));
 }
 
-void drawScoreBoard(QGraphicsScene *scene, int cardWidth, int cardHeight, int cardGap){
-
-}
+//void drawScoreBoard(QGraphicsScene *scene, int cardWidth, int cardHeight, int cardGap){}
 
 void setPinTouchedCards(CardStack &pinStack){
   pinStack.getStackCard(0)->setTouchedCards({1, 2});
