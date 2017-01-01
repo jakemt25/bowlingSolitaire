@@ -33,6 +33,7 @@ public:
   bool getClicked() {return mIsClicked;}
   void clearClicked(){mIsClicked = false;}
   void setTouchedCards(QList<int> inTouchedCards){mTouchedCards = inTouchedCards;}
+  QList<int> getTouchedCards(){return mTouchedCards;}
   void printTouchedCards(){qDebug()<<"Printing Touched Cards\n"<<mTouchedCards;}
   void Card::mousePressEvent(QGraphicsSceneMouseEvent *event){ mIsClicked = true;}
   //Constructor needs: image location, card value, card suite

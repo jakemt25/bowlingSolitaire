@@ -53,7 +53,7 @@ int main(int argc, char **argv)
   drawBalls(&scene, ballOneStack, ballTwoStack, ballThreeStack, cardWidth, cardHeight, cardGap);
   //drawScoreBoard(&scene, cardWidth, cardHeight, cardGap);
   view.show();
-  QList<Card*> savedPins;
+  Card* selectedBallCard = 0;
   //set all cards in nonclicked initially
   for(int i = 0; i < pinStack.getStackCards().size(); i++){
     pinStack.appendNonSelectedCards(pinStack.getStackCard(i));
@@ -84,90 +84,208 @@ int main(int argc, char **argv)
         if(selectedSize < maxSelection){
           pinStack.appendSelectedCards(curCard);
           pinStack.removeNonSelectedCards(i);
-          scene.addRect(curCard->pos().x(), curCard->pos().y(), cardWidth, cardHeight, QPen(QColor("red")));
+          scene.addRect(curCard->pos().x(), curCard->pos().y(), cardWidth, cardHeight, QPen(QColor("blue")));
         }
         //clear clicked
         curCard->clearClicked();
       }
     }
-    QCoreApplication::processEvents();
-  }
 
-  /*while(true){
-    QList<Card*> selectedPins, selectedBalls, nonSelectedPins;
-    for(int i = 0; i < pinStack.getStackSize(); i++){
-      if(pinStack.getStackCard(i)->getSelected()){
-        selectedPins.append(pinStack.getStackCard(i));
-      }
-      else{
-        nonSelectedPins.append(pinStack.getStackCard(i));
-      }
-    }
-    for(int i = 0; i < ballOneStack.getStackSize(); i++){
-      if(ballOneStack.getStackCard(i)->getSelected()){
-        selectedBalls.append(ballOneStack.getStackCard(i));
-      }
-    }
-    for(int i = 0; i < ballTwoStack.getStackSize(); i++){
-      if(ballTwoStack.getStackCard(i)->getSelected()){
-        selectedBalls.append(ballTwoStack.getStackCard(i));
-      }
-    }
-    for(int i = 0; i < ballThreeStack.getStackSize(); i++){
-      if(ballThreeStack.getStackCard(i)->getSelected()){
-        selectedBalls.append(ballThreeStack.getStackCard(i));
-      }
-    }
-    //make sure only 3 pins are selected
-    if(selectedPins.size() > 3){
-      //have to reset the mSelected values of cards removed
-      for(int i = 0; i < selectedPins.size(); i++){
-        for(int j = 0; j < savedPins.size(); j++){
-          //remove cards from savedPins from selected
-          if(selectedPins.at(i) == savedPins.at(j)){
-            selectedPins.removeAt(i);
-          }
+    //check if valid selection
+    QList<int> selectedIndices;
+    //selection cards places in the pins
+    for(int i = 0; i < pinStack.getSelectedCards().size(); i++){
+      for(int j = 0; j < pinStack.getStackCards().size(); j++){
+        if(pinStack.getSelectedCard(i) == pinStack.getStackCard(j)){
+          selectedIndices.append(j);
         }
       }
-      //set mSelected back to false
-      for(int i = 0; i < selectedPins.size(); i++){
-        selectedPins.at(i)->setIsSelected(false);
-      }
-      //revert the selected to what they were
-      selectedPins = savedPins;
     }
-    else savedPins = selectedPins;
+    int count = 0;
+    bool validCheck = false;
+    QList<bool> isValid = {false, false, false};
+    //check using algorithm
+    switch(pinStack.getSelectedCards().size()){
+    //do nothing
+    case 0:
+      break;
+    //one selection is valid
+    case 1:
+      //return isValid;
+      validCheck = true;
+      //qDebug() << "isValid";
+    //if two or 3 then use function
+      break;
+    case 2:
+      //check if 0 relates to 1
+      for(int i = 0; i < pinStack.getSelectedCard(1)->getTouchedCards().size(); i++){
+        if(selectedIndices.at(0) == pinStack.getSelectedCard(1)->getTouchedCards().at(i)){
+          isValid.replace(0, true);
+        }
+      }
+      //check if 1 relates to 0
+      for(int i = 0; i < pinStack.getSelectedCard(0)->getTouchedCards().size(); i++){
+        if(selectedIndices.at(1) == pinStack.getSelectedCard(0)->getTouchedCards().at(i)){
+          isValid.replace(1, true);
+        }
+      }
+      for(int i = 0; i < isValid.size(); i++){
+        if(isValid.at(i)) count++;
+      }
+      if(count > 0){
+        validCheck = true;
+        //qDebug() << "isValid";
+      }
+      //else qDebug() << "notValid";
+      break;
+    case 3:
+      //check if 0 relates to 1
+      for(int i = 0; i < pinStack.getSelectedCard(1)->getTouchedCards().size(); i++){
+        if(selectedIndices.at(0) == pinStack.getSelectedCard(1)->getTouchedCards().at(i)){
+          isValid.replace(0, true);
+        }
+      }
+      //check if 1 relates to 2
+      for(int i = 0; i < pinStack.getSelectedCard(2)->getTouchedCards().size(); i++){
+        if(selectedIndices.at(1) == pinStack.getSelectedCard(2)->getTouchedCards().at(i)){
+          isValid.replace(1, true);
+        }
+      }
+      //check if 2 relates to 0
+      for(int i = 0; i < pinStack.getSelectedCard(0)->getTouchedCards().size(); i++){
+        if(selectedIndices.at(2) == pinStack.getSelectedCard(0)->getTouchedCards().at(i)){
+          isValid.replace(2, true);
+        }
+      }
+      for(int i = 0; i < isValid.size(); i++){
+        if(isValid.at(i)) count++;
+      }
+      if(count > 1){
+        validCheck = true;
+      }
+      break;
+    }
+
+    //get ball selection
+    Card* newSelectedBallCard = 0;
+    if(ballOneStack.getStackCards().size() != 0){
+      Card* curCard = ballOneStack.getStackCards().last();
+      if(curCard->getClicked()/* && selectedBallCard != 0*/){
+        newSelectedBallCard = curCard;
+        curCard->clearClicked();
+      }
+    }
+    if(ballTwoStack.getStackCards().size() != 0){
+      Card* curCard = ballTwoStack.getStackCards().last();
+      if(curCard->getClicked()/* && selectedBallCard != 0*/){
+        newSelectedBallCard = curCard;
+        curCard->clearClicked();
+      }
+    }
+    if(ballThreeStack.getStackCards().size() != 0){
+      Card* curCard = ballThreeStack.getStackCards().last();
+      if(curCard->getClicked()/* && selectedBallCard != 0*/){
+        newSelectedBallCard = curCard;
+        curCard->clearClicked();
+      }
+    }
+    //toggling the already selected one
+    if(selectedBallCard == newSelectedBallCard){
+      if(selectedBallCard != 0){
+        QGraphicsItem* item = scene.itemAt(selectedBallCard->pos(), QTransform());
+        if(item->type() != selectedBallCard->type()){
+          scene.removeItem(item);
+        }
+        selectedBallCard = 0;
+      }
+    }
+    //add/remove selected ball rectangles
+    else{
+      if(newSelectedBallCard != 0){
+        if(selectedBallCard != 0){
+          QGraphicsItem* item = scene.itemAt(selectedBallCard->pos(), QTransform());
+          if(item->type() != selectedBallCard->type()){
+            scene.removeItem(item);
+          }
+        }
+        scene.addRect(newSelectedBallCard->pos().x(), newSelectedBallCard->pos().y(), cardWidth, cardHeight, QPen(QColor("blue")));
+        selectedBallCard = newSelectedBallCard;
+      }
+    }
+
+
+    //get pin total
     int pinTotal = 0;
-    for(int i = 0; i < selectedPins.size(); i++){
-      Card* curCard = selectedPins.at(i);
-      scene.addRect(curCard->pos().x(), curCard->pos().y(), cardWidth, cardHeight, QPen(QColor("red")));
-      pinTotal += curCard->getValue();
+    for(int i = 0; i < pinStack.getSelectedCards().size(); i++){
+      pinTotal += pinStack.getSelectedCard(i)->getValue();
     }
-    int ballTotal = 0;
-    for(int i = 0; i < selectedBalls.size(); i++){
-      Card* curCard = selectedBalls.at(i);
-      scene.addRect(curCard->pos().x(), curCard->pos().y(), cardWidth, cardHeight, QPen(QColor("blue")));
-      ballTotal += curCard->getValue();
+    QGraphicsSimpleTextItem pinText;
+    if(pinTotal > 0){
+      QPen textPen;
+      textPen.setWidth(0);
+      pinText.setPos(cardGap+2*cardWidth, cardHeight*5);
+      pinText.setText(QString::number(pinTotal));
+      pinText.setPen(textPen);
+      pinText.setScale(3);
+      scene.addItem(&pinText);
     }
-    //qDebug() << scene.items();
-    //qDebug() << pinTotal << ballTotal;
-    //draw selected rectangles
-    for(int i = 0; i < pinStack.getStackSize(); i++){
-      Card* curCard = pinStack.getStackCard(i);
-      QGraphicsItem* item = scene.itemAt(curCard->pos(), QTransform());
-      if(item->type() ==  curCard->type() && curCard->getSelected()){
-        scene.addRect(curCard->pos().x(), curCard->pos().y(), cardWidth, cardHeight, QPen(QColor("red")));
-      }
+
+    //see if pin and ball selection are compatible
+    int validMove = 0;
+    int pinChoice =-1;
+    if(pinTotal != 0) pinChoice = pinTotal%10;
+    int ballChoice = -1;
+    if(selectedBallCard != 0) ballChoice = selectedBallCard->getValue()%10;
+    if(pinChoice == ballChoice && pinChoice != -1 && validCheck){
+      pinText.setBrush(QColor("blue"));
+      validMove = 1;
     }
-    for(int i = 0; i < selectedPins.size(); i++){
-      Card* curCard = pinStack.getStackCard(i);
-      QGraphicsItem* item = scene.itemAt(curCard->pos(), QTransform());
-      if(item->type() != curCard->type() && !curCard->getSelected()){
-        scene.removeItem(item);
+    else if((ballChoice == -1 && validCheck)|| pinChoice == -1){
+      pinText.setBrush(QColor("orange"));
+      validMove = 0;
+    }
+    else{
+      pinText.setBrush(QColor("red"));
+      validMove = -1;
+    }
+
+
+    //draw things
+    QPen ballRectPen;
+    ballRectPen.setWidth(3);
+    if(validCheck && validMove == 1) ballRectPen.setColor("blue");
+    else if(validMove == 0) ballRectPen.setColor("orange");
+    else ballRectPen.setColor("red");
+    if(selectedBallCard != 0){
+      QGraphicsItem* ballItem = scene.itemAt(selectedBallCard->pos(), QTransform());
+      QGraphicsRectItem* ballItemRect = (QGraphicsRectItem*) ballItem;
+      ballItemRect->setPen(ballRectPen);
+    }
+
+    QPen pinRectPen;
+    pinRectPen.setWidth(3);
+    for(int i = 0; i < pinStack.getSelectedCards().size(); i++){
+      Card* curPinCard = pinStack.getSelectedCard(i);
+      QGraphicsItem* pinItem = scene.itemAt(curPinCard->pos(), QTransform());
+      QGraphicsRectItem* pinItemRect = (QGraphicsRectItem*) pinItem;
+      //make sure it's a rectangle that was selected
+      if(pinItem->type() != curPinCard->type()){
+        if(validCheck && validMove == 1){
+          pinRectPen.setColor("blue");
+          pinItemRect->setPen(pinRectPen);
+        }
+        else if(validCheck && validMove == 0){
+          pinRectPen.setColor("orange");
+          pinItemRect->setPen(pinRectPen);
+        }
+        else{
+          pinRectPen.setColor("red");
+          pinItemRect->setPen(pinRectPen);
+        }
       }
     }
     QCoreApplication::processEvents();
-  }*/
+  }
   return app.exec();
 }
 
@@ -265,16 +383,16 @@ void drawBalls(QGraphicsScene *scene, CardStack &ballOneStack, CardStack &ballTw
 //void drawScoreBoard(QGraphicsScene *scene, int cardWidth, int cardHeight, int cardGap){}
 
 void setPinTouchedCards(CardStack &pinStack){
-  pinStack.getStackCard(0)->setTouchedCards({1, 2});
-  pinStack.getStackCard(1)->setTouchedCards({0, 2, 3, 4});
-  pinStack.getStackCard(2)->setTouchedCards({0, 1, 4, 5});
-  pinStack.getStackCard(3)->setTouchedCards({1, 4, 6, 7});
-  pinStack.getStackCard(4)->setTouchedCards({1, 2, 3, 5, 7, 8});
-  pinStack.getStackCard(5)->setTouchedCards({2, 4, 8, 9});
-  pinStack.getStackCard(6)->setTouchedCards({3, 7});
-  pinStack.getStackCard(7)->setTouchedCards({3, 4, 6, 8});
-  pinStack.getStackCard(8)->setTouchedCards({4, 5, 7, 9});
-  pinStack.getStackCard(9)->setTouchedCards({5, 8});
+  pinStack.getStackCard(0)->setTouchedCards({1, 4});
+  pinStack.getStackCard(1)->setTouchedCards({0, 2, 4, 5});
+  pinStack.getStackCard(2)->setTouchedCards({1, 3, 5, 6});
+  pinStack.getStackCard(3)->setTouchedCards({2, 6});
+  pinStack.getStackCard(4)->setTouchedCards({0, 1, 5, 7});
+  pinStack.getStackCard(5)->setTouchedCards({1, 2, 4, 6, 7, 8});
+  pinStack.getStackCard(6)->setTouchedCards({2, 3, 5, 8});
+  pinStack.getStackCard(7)->setTouchedCards({4, 5, 8, 9});
+  pinStack.getStackCard(8)->setTouchedCards({5, 6, 7, 9});
+  pinStack.getStackCard(9)->setTouchedCards({7, 8});
 }
 
 void printPinTouchedCards(CardStack &pinStack){
