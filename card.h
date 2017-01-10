@@ -10,7 +10,6 @@
 
 #include <QGraphicsSvgItem>
 #include <QDebug>
-#include "carddeck.h"
 
 class Card : public QGraphicsSvgItem
 {
@@ -26,6 +25,13 @@ public:
     Heart
   };
 
+  enum WhichStack{
+    Pin = 0,
+    Ball1,
+    Ball2,
+    Ball3
+  };
+
   //Functions
   CardSuite getSuite(){return mCardSuite;}
   int type() const {return Type;}
@@ -36,6 +42,8 @@ public:
   QList<int> getTouchedCards(){return mTouchedCards;}
   void printTouchedCards(){qDebug()<<"Printing Touched Cards\n"<<mTouchedCards;}
   void Card::mousePressEvent(QGraphicsSceneMouseEvent *event){ mIsClicked = true;}
+  void setStackLocation(WhichStack stackLocation){mStackLocation = stackLocation;}
+  WhichStack getStackLocation(){return mStackLocation;}
   //Constructor needs: image location, card value, card suite
   Card(const QString &fileName, int mValue, CardSuite mSuite);
   ~Card();
@@ -47,6 +55,7 @@ private:
   bool mCardRevealed;
   bool mIsClicked;
   QList<int> mTouchedCards;
+  WhichStack mStackLocation;
 };
 
 #endif // CARD_H

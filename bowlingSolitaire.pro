@@ -13,9 +13,11 @@ TEMPLATE = app
 SOURCES += main.cpp \
     card.cpp \
     carddeck.cpp \
+    gamestate.cpp
 
 HEADERS += \
     card.h \
     carddeck.h \
+    gamestate.h
 
 

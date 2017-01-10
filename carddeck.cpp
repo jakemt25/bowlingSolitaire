@@ -5,7 +5,6 @@
 #include <QDir>
 #include <time.h>
 
-
 CardDeck::CardDeck()
 {
 
@@ -17,7 +16,7 @@ CardDeck::~CardDeck()
 
 void CardDeck::createCards(int numCards)
 {
-  //qDebug() << QDir::current().path();
+  mDeckCards.clear();
   for(int i = 1; i <= numCards; i++){
     mDeckCards.append(new Card(QString(":/images/clubs/Club_%1_75x110.svg").arg(i), i, Card::Club));
   }
@@ -68,11 +67,13 @@ CardStack::~CardStack()
 }
 
 
-void CardStack::createStack(CardDeck &cardDeck, int cardsDrawn)
+void CardStack::createStack(CardDeck &cardDeck, int cardsDrawn, Card::WhichStack stackLocation)
 {
+  mStackCards.clear();
   int i = 0;
   for(i; i < cardsDrawn; i++)
   {
+    cardDeck.getDeckCard(i)->setStackLocation(stackLocation);
     mStackCards.append(cardDeck.getDeckCard(i));
   }
   for(i = 0; i < cardsDrawn; i++)
@@ -105,3 +106,15 @@ void CardStack::printStack()
     qDebug() << mStackCards[i]->getValue() << " " << mStackCards[i]->getSuite();
   }
 }
+
+myButton::myButton(int x, int y, int h, int w)
+  : QGraphicsRectItem(x, y, w, h),
+    mIsClicked(false)
+{
+
+}
+
+myButton::~myButton(){
+
+}
+

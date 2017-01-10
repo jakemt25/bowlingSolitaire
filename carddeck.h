@@ -36,7 +36,7 @@ class CardStack: public CardDeck
 
 public:
   //Functions
-  void createStack(CardDeck &cardDeck, int cardsDrawn);
+  void createStack(CardDeck &cardDeck, int cardsDrawn, enum Card::WhichStack whichStack);
   void addToStack(Card* newCard);
   void removeFromStack();
   void printStack();
@@ -61,6 +61,16 @@ private:
   QList<Card*> mStackCards;
   QList<Card*> mSelectedCards;
   QList<Card*> mNonSelectedCards;
+};
+
+class myButton : public QGraphicsRectItem
+{
+public:
+  void myButton::mousePressEvent(QGraphicsSceneMouseEvent *event){ mIsClicked = true;}
+  bool mIsClicked;
+
+  myButton(int x, int y, int h, int w);
+  ~myButton();
 };
 
 #endif // CARDDECK_H
